@@ -6,7 +6,7 @@ Currently only support union-based injection. Planning to add other techniques l
 
 ## Usage
 ### Script Help
-```python
+```
 python3 mssqli-duet.py -h
 usage: mssqli-duet.py [-h] -i INJECTION [-e ENCODING] -t TIME_DELAY -rid
                       RID_RANGE [-ssl SSL] -p PARAMETER [-proxy PROXY]
