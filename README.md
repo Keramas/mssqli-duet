@@ -2,7 +2,7 @@
 
 SQL injection script for MSSQL that extracts domain users from an Active Directory environment based on RID bruteforcing. Supports various forms of WAF bypass techniques through the implementation of SQLmap tamper functions. Additional tamper functions can be incorporated by the user depending on the situation and environment.
 
-Currently only support union-based injection. Planning to add other techniques later. More samples and test cases are required to fully test tool's functionality, feedback and comments are greatly welcomed and appreciated!
+Currently only supports union-based injection. Planning to add other techniques later. More samples and test cases are required to fully test tool's functionality, feedback and comments are greatly welcomed and appreciated!
 
 ## Usage
 ### Script Help
