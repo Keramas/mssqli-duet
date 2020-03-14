@@ -39,7 +39,7 @@ Prepare to be enumerated!
 ```
 
 ### How to use
-After identifying a union-based SQL injection in an application, copy the raw request from Burp Suit using the 'copy to file' feature.
+After identifying a union-based SQL injection in an application, copy the raw request from Burp Suite using the 'copy to file' feature.
 
 Pass the saved request to DUET with the `-r` flag. Specify the vulnerable parameter and well as the point of injection. As an example, if the parameter "element" is susceptible to SQL injection, `-p` will be "element". DUET will build out all the SQL injection queries automatically, but specification for the initial injection needs to be provided. Meaning, if the injection occurs because of a single apostrophe after the parameter data, this is what would be specified for the `-i` argument. 
 ```
