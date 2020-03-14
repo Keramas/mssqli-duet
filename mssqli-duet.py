@@ -267,25 +267,24 @@ def parse_request(request_file,protocol):
         host = host_header[:-5] 
 
         #Get Content-Type
+        #Default to the following header
+        content_type = "application/x-www-form-urlencoded"
         for header in headers:
-            if b"Content-Type" in header:
+            if b"Content-Type:" in header:
                 content_type_header = str(header).split(' ')[1]
                 content_type = content_type_header[:-5]
-            else:
-                content_type = "applcation/x-www-form-urlencoded"
 
         #Get cookies
+        cookies = None
         for header in headers:
-            if b"cookies" in header or b"Cookies" in header:
+            if b"cookies:" in header or b"Cookies:" in header:
                  print(header)
                  header_string = str(header)[:-5]
                  cookie_values = str(header_string).split(':')[1]
                  cookies = dict(x.split('=') for x in cookie_values.split(';'))
-            else:
-                cookies = None
+
         f.close()
         
-
 
     if protocol == True:
         url = "https://"
@@ -300,8 +299,9 @@ def parse_request(request_file,protocol):
     print("Target URL =", url)
     print("Method =",method)
     print("Content-Type =",content_type)
-    if cookies:
-        print("Cookies = ",cookies)
+    
+    print("Cookies = ",cookies)
+    
     if method == "POST":
         print("Request data =",body)
 
