@@ -66,7 +66,8 @@ Content-Type = applcation/x-www-form-urlencoded
 [+] Discovering domain SID...
 S-1-5-21-4142252318-1896537706-4233180933-
 
-[+] Enumerating users...
+[+] Enumerating Active Directory via SIDs...
+
 NEUTRINO\HYDROGENDC01$
 NEUTRINO\DnsAdmins
 NEUTRINO\DnsUpdateProxy
@@ -74,10 +75,11 @@ NEUTRINO\HELIUM$
 NEUTRINO\BORON$
 NEUTRINO\BERYLLIUM$
 NEUTRINO\aeinstein
-NEUTRINO\Organization Management
-NEUTRINO\Recipient Management
-NEUTRINO\View-Only Organization Management
-NEUTRINO\Public Folder Management
+NEUTRINO\bbobberson
+NEUTRINO\csagan
+NEUTRINO\ccheese
+NEUTRINO\svc_web
+NEUTRINO\svc_sql
 ```
 
 ## References 
