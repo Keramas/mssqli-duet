@@ -2,9 +2,20 @@
 
 SQL injection script for MSSQL that extracts domain users from an Active Directory environment based on RID bruteforcing. Supports various forms of WAF bypass techniques through the implementation of SQLmap tamper functions. Additional tamper functions can be incorporated by the user depending on the situation and environment.
 
-Currently only supports union-based injection. Planning to add other techniques later. More samples and test cases are required to fully test tool's functionality, feedback and comments are greatly welcomed and appreciated!
+Comes in two flavors: straight-up `Python script` for terminal use, or a `Burp Suite plugin` for simple GUI navigation.
 
-## Usage
+Currently only supports union-based injection. Planning to add other techniques later if possible. More samples and test cases are required to fully test tool's functionality and accuracy. Feedback and comments are greatly welcomed if you encounter a situation it does not work. Custom tailoring the script and plugin to your needs should not be too difficult as well.
+
+## Burp Suite Plugin
+After loading the plugin into Burp Suite, right-click on a request and send it to `MSSQLi-DUET`. More details on the parameters and such are described below.
+
+<img src = "images/mssqli-plugin1.png" width='500'>
+
+The request will populate in the request window, and only the fields above it need to be filled out. After hitting run the output will be placed in the results output box for easy copy pasting.
+
+<img src = "images/mssqli-plugin2.png" width='500'>
+
+## Python Script Usage
 ### Script Help
 ```
 python3 mssqli-duet.py -h
