@@ -9,11 +9,9 @@ Currently only supports union-based injection. Planning to add other techniques 
 ## Burp Suite Plugin
 After loading the plugin into Burp Suite, right-click on a request and send it to `MSSQLi-DUET`. More details on the parameters and such are described below.
 
-<img src = "images/mssqli-plugin1.png" width='500'>
-
 The request will populate in the request window, and only the fields above it need to be filled out. After hitting run the output will be placed in the results output box for easy copy pasting.
 
-<img src = "images/mssqli-plugin2.png" width='500'>
+<img src = "images/plugin-demo.gif">
 
 ## Python Script Usage
 ### Script Help
