@@ -422,7 +422,7 @@ def determine_columns(method,url,content_type,body,data,parameter,encoding,proxi
     
     
     if baseline_response == second_response:
-        print("[-] Cannot determine the number of columns. Check payload or encoding method.")
+        print("[-] Cannot determine the number of columns. Check responses, payload or encoding method.")
         sys.exit(1)
     
 
@@ -446,7 +446,11 @@ def determine_columns(method,url,content_type,body,data,parameter,encoding,proxi
         if str(response.text) != str(second_response):
             valid = False
             break
-        
+        elif i == 50:
+            valid = False
+            print("[-] Could not determine number of columns. Check responses, payload or request data.")
+            sys.exit(1)
+            
         else:
             i += 1
             continue

@@ -4,7 +4,9 @@ SQL injection script for MSSQL that extracts domain users from an Active Directo
 
 Comes in two flavors: straight-up `Python script` for terminal use, or a `Burp Suite plugin` for simple GUI navigation.
 
-Currently only supports union-based injection. Planning to add other techniques later if possible. More samples and test cases are required to fully test tool's functionality and accuracy. Feedback and comments are greatly welcomed if you encounter a situation it does not work. Custom tailoring the script and plugin to your needs should not be too difficult as well.
+Currently only supports union-based injection at the moment. More samples and test cases are required to fully test tool's functionality and accuracy. Feedback and comments are greatly welcomed if you encounter a situation it does not work. 
+
+Custom tailoring the script and plugin to your needs should not be too difficult as well. Be sure to read the Notes section for some troubleshooting.
 
 ## Burp Suite Plugin
 After loading the plugin into Burp Suite, right-click on a request and send it to `MSSQLi-DUET`. More details on the parameters and such are described below.
@@ -90,6 +92,15 @@ NEUTRINO\ccheese
 NEUTRINO\svc_web
 NEUTRINO\svc_sql
 ```
+
+## Notes
+The script may need to be modified depending on the casting and type limitations of the columns that are discovered.   
+This includes modifications to switch the column position of the payload, and also modifying the query strings themselves to account for column types that will not generate errors.
+
+Additionally, the logic for determining the number of columns is currently not the greatest, and certain comparisons maybe need to be commented out to ensure proper determination takes place. 
+
+Overall, just take a look at the requests being sent in Burp and tailor the script as necessary to the SQL injection environment you find yourself in.
+
 
 ## References 
 https://blog.netspi.com/hacking-sql-server-procedures-part-4-enumerating-domain-accounts/

