@@ -6,7 +6,7 @@ import json
 import re
 import argparse
 import random
-from time import sleep
+from time import sleep, strftime, localtime
 
 # MSSQLi-DUET : MSSQL Injection-based Domain User Enumeration Tool
 
@@ -598,7 +598,10 @@ def main(encoding,time_delay,sid_range,parameter,request_file,data,ssl,proxy,out
 
 
 if __name__ == '__main__':
-   
+    start_time = strftime("%a, %d %b %Y %H:%M:%S", localtime())
+    print("[+] Beginning enumeration - Start time: ", start_time)
     encoding,time_delay,rid_range,parameter,request_file,data,ssl,proxy,outfile = get_args()
     main(encoding,time_delay,rid_range,parameter,request_file,data,ssl,proxy,outfile)
     print("\n[!] Finished!\n")
+    end_time = strftime("%a, %d %b %Y %H:%M:%S", localtime())
+    print(end_time)
